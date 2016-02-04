@@ -1,7 +1,8 @@
 source: app/
 before: 'echo "I will run before syncing to the device..."'
-exec: 'python main.py'
 ignore:
     - .git
+    - Dockerfile
+    - resin-sync.yml
 progress: true
 watch: false
