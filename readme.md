@@ -92,4 +92,44 @@ main.py
              36 100%    0.00kB/s    0:00:00 (xfr#1, to-chk=0/2)
 Synced, restarting device
 ```
-Your new python code should now be running on the device. **Note** if you need to install dependencies with something like `pip install` or `apt-get install`, then you will still need to go through the build pipeline and do a regular `git push resin master`
+In about 30seconds, your new python code should be running on the development device.
+
+  **Note:**  If you need to install dependencies with something like `pip install` or `apt-get install`, then you will still need to go through the build pipeline and do a regular `git push resin master`
+
+##### What is resin-sync.yml
+The resin-sync.yml file is a handy file that allows you to describe the behaviour of resin-sync for this repo. In this example it looks like this:
+```
+source: app/
+before: 'echo "I will run before syncing to the device..."'
+ignore:
+    - .git
+    - Dockerfile
+    - resin-sync.yml
+progress: true
+watch: false
+```
+Most of the labels are self explanitory, but I will give a short description here any how.
+
+**source:** This defines the directory that will be synced to the device. This will always be synced to `/usr/src/app` on the target device (in the future this will be configurable). In our example we sync our local `app/` directory to `/usr/src/app` so all our python source gets synced across.
+
+**before:** The `before` command, allows us to define a pre-sync action, this is useful for compiled languages like go-lang or java, where we could have this command excute a local cross-compile and then only sync over the binaries that are produced.
+
+**ignore:** The `ignore` command allows you to list files and directories that resin-sync should ignore when syncing to the device. In this example we ignore `.git`, even though this is strictly not necessary because there is no `.git ` in the `app/` directory we are syncing.
+
+**progress:** This command lets you see which files are being synced across and how fast that is happening. Its mainly useful for debugging and checking what is actually going on.
+
+**watch:** This command allows you to set the resin-sync plugin to continually watch a directory and sync files every time something is changed and saved. **NOTE:** If you do a couple of rapid saves, it will try sync while the container on the device is still restarting, and you will see some errors.
+
+For a more comprehensive list of resin sync commands, run `resin help sync`
+
+##### Some Extra Info
+
+Resin-sync works by setting up an ssh server on the device that listens on port 80. The code is then synced over the resin.io VPN to the device. This means you can use resin-sync even with remote devices anywhere in the world.
+
+It also means you will have ssh automatically setup for you if you want to run some test commands. Just run `ssh root@<DEVICE-IP> -p80`. By default the device side container will pull all the public ssh keys onto the device, so you will not need a password. But if you ssh key is not on the device, then you can access the ssh with the password: `resin`.
+
+##### Current Limitations
+
+Currently the sync can only be done to the `/usr/src/app` directory of the device. Have a look at the base image to see why. [[link](https://github.com/resin-io-library/base-images/pull/49/files#diff-90358446892ac0a322643ed27595fbd9R12)]
+
+Currently there is also a case that if you sync some changes, roll back those change and then commit and push...then you will notice that the synced changes are still running. This is again due to the section of code above. It is recommended that you do a purge of /data on your device before you run the git push.
