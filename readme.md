@@ -7,6 +7,8 @@ the fleet.
 In order to get this new super power you will need to set up a few things on your
 development computer.
 
+>**NOTE:** This example assumes you are familiar with the basic resin.io workflow and have set up a device and can comfortably push code to it. If you are new to resin.io first have a look at our [getting started guide](http://docs.resin.io/#/pages/installing/gettingStarted.md).
+
 ##### Install the Plugin
 resin-sync depends on the following:
 * node.js > 4.0
@@ -76,7 +78,8 @@ Additional commands:
 
 Now that you have the resin-cli and resin-sync plugin installed, you need to setup the device-side. This is pretty straight forward and only requires these 2 steps:
 1. Enable the deviceURL for the device which you want to use as your development device. This can be done from the `Actions` tab on the device page. If you need help with this, have a look at our [docs on DeviceURLs](http://docs.resin.io/#/pages/management/devices.md#enable-public-device-url).
-2. Push this repo (sync-python-example) to your resin.io application.
+2. Add an environment variable to the device called AUTH_TOKEN. The value of this variable should be your Auth token found on the preferences page. If you are unsure of how to set a device environment variable check our [docs on Env Vars](http://docs.resin.io/#/pages/management/env-vars.md)
+3. Push this repo (sync-python-example) to your resin.io application.
 
 Once the device has pulled the first update and is in the Idle state, you will be ready to start using resin-sync to really speed up your resin.io development.
 
@@ -94,7 +97,7 @@ Synced, restarting device
 ```
 In about 30seconds, your new python code should be running on the development device.
 
-  **Note:**  If you need to install dependencies with something like `pip install` or `apt-get install`, then you will still need to go through the build pipeline and do a regular `git push resin master`
+>**Note:**  If you need to install dependencies with something like `pip install` or `apt-get install`, then you will still need to go through the build pipeline and do a regular `git push resin master`
 
 ##### What is resin-sync.yml
 The resin-sync.yml file is a handy file that allows you to describe the behaviour of resin-sync for this repo. In this example it looks like this:
