@@ -1,5 +1,7 @@
 ### A Python resin sync example:
 
+>Note: Currently this will only work on the Raspberry Pi 2, because the base image is ARMv7
+
 This example will allow you to develop quickly on a resin.io device by avoiding
 the build/download process and directly syncing a folder to a "test" device in
 the fleet.
